@@ -7,8 +7,9 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, SendDataDelegate {
 
+    @IBOutlet weak var nameLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
         print("ViewController 뷰가 로드 되었다.")
@@ -36,15 +37,30 @@ class ViewController: UIViewController {
     
     @IBAction func tapCodePushButton(_ sender: UIButton) {
         
-        guard let viewController = self.storyboard?.instantiateViewController(withIdentifier: "CodePushViewController") else {return}
-        
+        guard let viewController = self.storyboard?.instantiateViewController(withIdentifier: "CodePushViewController")
+                as? CodePushViewController else {return}
+        viewController.name = "Oliver"
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
     @IBAction func tapCodePresentButton(_ sender: UIButton) {
-        guard let viewController = self.storyboard?.instantiateViewController(withIdentifier: "CodePresentViewController") else {return}
+        guard let viewController = self.storyboard?.instantiateViewController(withIdentifier: "CodePresentViewController")
+                as? CodePresentViewController else {return}
+        viewController.name = "Oliver"
+        viewController.delegate = self
         viewController.modalPresentationStyle = .fullScreen
         self.present(viewController, animated: true, completion: nil)
+    }
+    
+    override func prepare(for Segue: UIStoryboardSegue, sender: Any?){
+        if let viewController = Segue.destination as? SeguePushViewController{
+            viewController.name = "Oliver"
+        }
+    }
+    
+    func SendData(name: String) {
+        self.nameLabel.text = name
+        self.nameLabel.sizeToFit()
     }
 }
 
